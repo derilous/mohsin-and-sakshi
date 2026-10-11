@@ -1,6 +1,6 @@
-# Mohsin & Sakshi
+# Sakshi & Mohsin
 
-The wedding invitation for **Mohsin Habiya** and **Sakshi Arora** —
+The wedding invitation for **Sakshi Arora** and **Mohsin Habiya** —
 19 & 20 March 2027, The Westin Resort Nusa Dua, Bali.
 
 A single static page. No framework, no build step, no server. It is three
@@ -32,9 +32,9 @@ Then open <http://localhost:4173>.
    tells guests to email instead, so the page is safe to share either way.
 2. **Fill in the gaps** — search the HTML for these and replace with real
    details when you have them:
-   - room block / booking link and rates (the *Your Stay* section)
-   - the dress-code wording, if "tropical formal" isn't what you meant
-   - the RSVP deadline, currently **31 October 2026**
+   - the RSVP deadline, currently **31 December 2026** — I picked this; change it
+   - the villa name/location for the Arora guests, if you want it named
+   - whether airport transfers are arranged, and from when
 3. **Add a social preview image** at `assets/img/og.png` (1200×630). Until it
    exists, links shared on WhatsApp show no picture.
 
@@ -54,10 +54,12 @@ on a deep link (`/#rsvp`) skips it, so you can send guests straight to the form.
 **The countdown** counts to `2027-03-19T15:30:00+08:00` — when the Haldi starts,
 in Bali time. It is set in one place, `CONFIG.WEDDING_ISO` in `main.js`.
 
-**The palm fronds** are generated geometry, not photographs: a stem curve with
-leaflets placed along it under a sine envelope. Each file is about 2 KB and
-stays sharp at any size. They are positioned by their stalk, not their bounding
-box, so rotating one swings it from where it is rooted.
+**The artwork is all generated geometry**, not photographs. Palm fronds are a
+stem curve with leaflets placed along it under a sine envelope; frangipani are
+five asymmetric bezier petals in a pinwheel; the surf between sections is three
+phase-shifted sine bands. Each file is a couple of KB and stays sharp at any
+size. Fronds are positioned by their stalk, not their bounding box, so rotating
+one swings it from where it is rooted.
 
 **Caching.** The CSS and JS are linked with `?v=1`. If you change either file
 and the old version sticks, bump that number in `index.html`.

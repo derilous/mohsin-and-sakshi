@@ -174,6 +174,7 @@
         guests:     (fd.get('guests')     || '1').toString(),
         guestNames: (fd.get('guestNames') || '').toString().trim(),
         events:     events.join(', '),
+        stay:       (fd.get('accommodation') || '').toString(),
         dietary:    (fd.get('dietary')    || '').toString().trim(),
         message:    (fd.get('message')    || '').toString().trim(),
         page:       window.location.href
@@ -184,6 +185,7 @@
         payload.guests = '0';
         payload.guestNames = '';
         payload.events = '';
+        payload.stay = '';
         payload.dietary = '';
       }
 
@@ -219,9 +221,11 @@
     var coming = payload.attending === 'Joyfully accepts';
     var first  = payload.name.split(/\s+/)[0] || 'friend';
 
+    var hosted = payload.stay === 'Hosted by the couple';
     document.getElementById('thanksBody').textContent = coming
-      ? first + ', we are so glad you can make it. We will be in touch with ' +
-        'travel and room details closer to the day.'
+      ? first + ', we are so glad you can make it. ' + (hosted
+          ? 'We will send your room details closer to the day.'
+          : 'Let us know where you end up staying so we can plan the transfers.')
       : first + ', thank you for letting us know. You will be missed — we will ' +
         'raise a glass to you in Bali.';
 

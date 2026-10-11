@@ -1,5 +1,5 @@
 /**
- * Mohsin & Sakshi — RSVP backend
+ * Sakshi & Mohsin — RSVP backend
  * ------------------------------------------------------------------
  * A Google Apps Script bound to a Google Sheet. It:
  *   1. appends (or updates) one row per guest,
@@ -19,12 +19,12 @@
 var SHEET_NAME   = 'RSVPs';
 var COUPLE_EMAIL = 'mohsin.salim567@gmail.com';   // notifications land here
 var REPLY_TO     = 'mohsin.salim567@gmail.com';   // guests reply here
-var FROM_NAME    = 'Mohsin & Sakshi';
+var FROM_NAME    = 'Sakshi & Mohsin';
 var SITE_URL     = '';                            // e.g. https://derilous.github.io/mohsin-and-sakshi/
 
 var HEADERS = [
   'Timestamp', 'Name', 'Email', 'Phone', 'Attending', 'Party size',
-  'Party names', 'Events', 'Dietary', 'Message', 'Updated'
+  'Party names', 'Events', 'Accommodation', 'Dietary', 'Message', 'Updated'
 ];
 
 // ====================== WEB APP ENTRY POINTS =========================
@@ -63,6 +63,7 @@ function doPost(e) {
       guests:     String(d.guests     || '').trim(),
       guestNames: String(d.guestNames || '').trim(),
       events:     String(d.events     || '').trim(),
+      stay:       String(d.stay       || '').trim(),
       dietary:    String(d.dietary    || '').trim(),
       message:    String(d.message    || '').trim()
     };
@@ -103,7 +104,8 @@ function sheet_() {
     sh.setColumnWidth(1, 160);  // timestamp
     sh.setColumnWidth(2, 180);  // name
     sh.setColumnWidth(3, 230);  // email
-    sh.setColumnWidth(10, 320); // message
+    sh.setColumnWidth(9, 170);  // accommodation
+    sh.setColumnWidth(11, 320); // message
   }
 
   return sh;
@@ -118,7 +120,7 @@ function saveRow(r) {
   var now  = new Date();
   var row  = [
     now, r.name, r.email, r.phone, r.attending, r.guests,
-    r.guestNames, r.events, r.dietary, r.message, ''
+    r.guestNames, r.events, r.stay, r.dietary, r.message, ''
   ];
 
   var last = sh.getLastRow();
@@ -159,6 +161,7 @@ function emailGuest(r) {
     if (r.guests)     rows.push(['Party size', r.guests]);
     if (r.guestNames) rows.push(['Party', r.guestNames]);
     if (r.events)     rows.push(['Attending', r.events]);
+    if (r.stay)       rows.push(['Stay', r.stay]);
     if (r.dietary)    rows.push(['Dietary', r.dietary]);
   }
 
@@ -173,8 +176,8 @@ function emailGuest(r) {
     replyTo: REPLY_TO,
     name: FROM_NAME,
     subject: coming
-      ? 'Your RSVP is confirmed — Mohsin & Sakshi, Bali 2027'
-      : 'We received your RSVP — Mohsin & Sakshi',
+      ? 'Your RSVP is confirmed — Sakshi & Mohsin, Bali 2027'
+      : 'We received your RSVP — Sakshi & Mohsin',
     htmlBody: guestHtml_(first, intro, rows, schedule, coming),
     body: guestText_(first, intro, rows, coming)
   });
@@ -191,6 +194,7 @@ function emailCouple(r, updated) {
     'Party size: ' + (r.guests || '—'),
     'Party:      ' + (r.guestNames || '—'),
     'Events:     ' + (r.events || '—'),
+    'Stay:       ' + (r.stay || '—'),
     'Dietary:    ' + (r.dietary || '—'),
     '',
     'Message:',
@@ -209,8 +213,8 @@ function emailCouple(r, updated) {
 // ====================== EMAIL TEMPLATES =============================
 
 function guestHtml_(first, intro, rows, schedule, coming) {
-  var IVORY = '#FBF8F2', CREAM = '#F4EDE1', PALM = '#3A5244',
-      GOLD  = '#B49055', INK   = '#2E2E2A', MUTED = '#6F6A60';
+  var IVORY = '#FBF8F2', CREAM = '#F1E7D8', PALM = '#2C5F63',
+      GOLD  = '#B49055', INK   = '#273634', MUTED = '#677976';
 
   var detailRows = rows.map(function (p) {
     return '<tr>' +
@@ -257,7 +261,7 @@ function guestHtml_(first, intro, rows, schedule, coming) {
   '<div style="color:' + GOLD + ';font-size:11px;letter-spacing:4px;' +
   'text-transform:uppercase;margin-bottom:14px">You are invited</div>' +
   '<div style="color:' + IVORY + ';font-size:36px;font-family:Georgia,serif">' +
-  'Mohsin &amp; Sakshi</div>' +
+  'Sakshi &amp; Mohsin</div>' +
   '<div style="color:' + IVORY + ';opacity:.75;font-size:13px;letter-spacing:2px;' +
   'margin-top:12px">19 &amp; 20 MARCH 2027 &middot; NUSA DUA, BALI</div>' +
   '</td></tr>' +
@@ -276,16 +280,20 @@ function guestHtml_(first, intro, rows, schedule, coming) {
 
   (coming
     ? '<div style="height:1px;background:' + GOLD + ';opacity:.3;margin:32px 0"></div>' +
-      '<p style="margin:0;color:' + MUTED + ';font-size:15px">' +
+      '<p style="margin:0 0 14px;color:' + MUTED + ';font-size:15px">' +
       'Everything takes place at <strong style="color:' + INK + '">The Westin Resort ' +
-      'Nusa Dua, Bali</strong>. We will send room booking details and travel notes ' +
-      'closer to the date. If anything changes, just reply to this email.</p>'
+      'Nusa Dua, Bali</strong>. Please plan to arrive on the <strong style="color:' +
+      INK + '">morning of Friday 19 March</strong> &mdash; that is when your ' +
+      'accommodation begins.</p>' +
+      '<p style="margin:0;color:' + MUTED + ';font-size:15px">' +
+      'We have booked and are covering your stay, and will send your own room ' +
+      'details closer to the date. If anything changes, just reply to this email.</p>'
     : '') +
 
   siteButton +
 
   '<p style="margin:34px 0 0;color:' + MUTED + ';font-size:15px">' +
-  'With love,<br><span style="font-size:19px;color:' + PALM + '">Mohsin &amp; Sakshi</span></p>' +
+  'With love,<br><span style="font-size:19px;color:' + PALM + '">Sakshi &amp; Mohsin</span></p>' +
   '</td></tr>' +
 
   // footer
@@ -303,13 +311,15 @@ function guestText_(first, intro, rows, coming) {
 
   if (coming) {
     out.push('', 'THE CELEBRATIONS',
-      '  Haldi      Friday 19 March 2027, 3:30 pm - 6:30 pm',
+      '  Haldi      Friday 19 March 2027, 3:30 pm - 6:30 pm  (please wear yellow)',
       '  Nikah      Saturday 20 March 2027, 4:00 pm - 6:00 pm',
       '  Reception  Saturday 20 March 2027, 7:00 pm - 10:00 pm',
-      '', 'All at The Westin Resort Nusa Dua, Bali.');
+      '', 'All at The Westin Resort Nusa Dua, Bali.',
+      '', 'Please arrive on the morning of Friday 19 March - that is when your',
+      'accommodation begins. We have booked and are covering your stay.');
   }
 
-  out.push('', 'With love,', 'Mohsin & Sakshi');
+  out.push('', 'With love,', 'Sakshi & Mohsin');
   if (SITE_URL) out.push('', SITE_URL);
   return out.join('\n');
 }
@@ -350,6 +360,7 @@ function testRsvp() {
         guests: '2',
         guestNames: 'Test Guest, Plus One',
         events: 'Haldi — Fri 19 Mar, Nikah — Sat 20 Mar, Reception — Sat 20 Mar',
+        stay: 'Hosted by the couple',
         dietary: 'Vegetarian',
         message: 'This is a test row. Delete it from the sheet when you are done.'
       })
