@@ -32,7 +32,6 @@ Then open <http://localhost:4173>.
    tells guests to email instead, so the page is safe to share either way.
 2. **Fill in the gaps** — search the HTML for these and replace with real
    details when you have them:
-   - the RSVP deadline, currently **31 December 2026** — I picked this; change it
    - the villa name/location for the Arora guests, if you want it named
    - whether airport transfers are arranged, and from when
 3. **Add a social preview image** at `assets/img/og.png` (1200×630). Until it
@@ -61,7 +60,15 @@ phase-shifted sine bands. Each file is a couple of KB and stays sharp at any
 size. Fronds are positioned by their stalk, not their bounding box, so rotating
 one swings it from where it is rooted.
 
-**Caching.** The CSS and JS are linked with `?v=1`. If you change either file
+**Photographs.** *Your Stay* sits on a photo that swaps by viewport: the
+portrait Nusa Penida shot on phones, the landscape Ulun Danu shot from 760px
+up, so neither is cropped to nothing. Only the matching one is downloaded. It
+drifts on scroll — `background-attachment: fixed` is the one-line version, but
+iOS Safari ignores it, so the drift is a transform on a layer 28% taller than
+the section. The text sits on a frosted panel; browsers without
+`backdrop-filter` get a solid one instead.
+
+**Caching.** The CSS and JS are linked with `?v=3`. If you change either file
 and the old version sticks, bump that number in `index.html`.
 
 **Motion.** Everything animated respects `prefers-reduced-motion`.

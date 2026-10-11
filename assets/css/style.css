@@ -609,6 +609,14 @@ img { max-width: 100%; display: block; }
 .section--ocean .detail p strong { color: var(--cream); }
 .section--ocean .detail h3 { color: var(--gold-light); }
 
+.detail p a {
+  color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.section--ocean .detail p a { color: var(--gold-light); }
+.detail p a:hover { text-decoration-thickness: 2px; }
+
 .btn-ghost {
   display: inline-block;
   margin-top: 0.4rem;
@@ -654,6 +662,63 @@ img { max-width: 100%; display: block; }
   line-height: 1.5;
   display: block;
 }
+
+/* ===========================================================
+   6a. Photographic section — Bali behind the words
+   =========================================================== */
+
+.section--photo {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(5.5rem, 3rem + 10vw, 11rem);
+}
+.section--photo > .wrap { position: relative; z-index: 1; }
+
+/* Taller than the section it sits in, so there is headroom to drift. */
+.photo-bg {
+  position: absolute;
+  left: 0; right: 0;
+  top: -14%;
+  height: 128%;
+  z-index: 0;
+  background-image: url("../img/stay-mobile.webp");   /* portrait, phones */
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+@media (min-width: 760px) {
+  .photo-bg { background-image: url("../img/stay-desktop.jpg"); }  /* landscape */
+}
+.photo-bg.is-parallax { will-change: transform; }
+
+/* scrim — keeps the type readable whatever the photograph is doing */
+.photo-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(18, 46, 49, 0.52) 0%,
+    rgba(18, 46, 49, 0.24) 40%,
+    rgba(18, 46, 49, 0.30) 62%,
+    rgba(18, 46, 49, 0.60) 100%);
+}
+
+/* the frosted card the words sit on */
+.panel {
+  background: rgba(20, 50, 53, 0.48);
+  border: 1px solid rgba(220, 238, 236, 0.18);
+  max-width: 820px;
+  margin-inline: auto;
+  padding: clamp(1.6rem, 0.9rem + 3.6vw, 3.4rem);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: 0 24px 60px -30px rgba(10, 28, 30, 0.8);
+}
+/* Safari on older iOS, and Firefox with the pref off, get a solid card. */
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  .panel { background: rgba(17, 43, 46, 0.86); }
+}
+.panel > .center { margin-bottom: clamp(1.8rem, 1rem + 2.6vw, 2.8rem); }
 
 /* ===========================================================
    6b. Gifts

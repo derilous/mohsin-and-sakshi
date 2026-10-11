@@ -115,6 +115,45 @@
   }
 
   /* ===========================================================
+     3b. Parallax on the photographic section
+
+     background-attachment: fixed is the one-line version of this, but
+     iOS Safari ignores it, so the drift is done with a transform on a
+     slightly oversized layer instead.
+     =========================================================== */
+
+  var photoBg = document.querySelector('.photo-bg');
+
+  if (photoBg && !reduceMotion) {
+    var host = photoBg.parentElement;
+    var queued = false;
+
+    var drift = function () {
+      queued = false;
+      var r = host.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > window.innerHeight + 80) return;
+
+      // -1 just below the fold, 0 dead centre, +1 just above it
+      var progress = (r.top + r.height / 2 - window.innerHeight / 2) /
+                     ((window.innerHeight + r.height) / 2);
+      // 9% of the layer's own height, comfortably inside the 14% headroom
+      photoBg.style.transform =
+        'translate3d(0,' + (progress * 9).toFixed(2) + '%,0)';
+    };
+
+    var onScroll = function () {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(drift);
+    };
+
+    photoBg.classList.add('is-parallax');
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    drift();
+  }
+
+  /* ===========================================================
      4. RSVP form
      =========================================================== */
 
