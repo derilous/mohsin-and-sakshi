@@ -20,7 +20,7 @@ var SHEET_NAME   = 'RSVPs';
 var COUPLE_EMAIL = 'mohsin.salim567@gmail.com';   // notifications land here
 var REPLY_TO     = 'mohsin.salim567@gmail.com';   // guests reply here
 var FROM_NAME    = 'Sakshi & Mohsin';
-var SITE_URL     = '';                            // e.g. https://derilous.github.io/mohsin-and-sakshi/
+var SITE_URL     = 'https://derilous.github.io/mohsin-and-sakshi/';
 
 var HEADERS = [
   'Timestamp', 'Name', 'Email', 'Phone', 'Attending', 'Party size',

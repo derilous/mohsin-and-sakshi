@@ -10,7 +10,8 @@
      deploying apps-script/Code.gs. See apps-script/SETUP.md.
      ----------------------------------------------------------- */
   var CONFIG = {
-    RSVP_ENDPOINT: '',
+    RSVP_ENDPOINT:
+      'https://script.google.com/macros/s/AKfycbzDcxZtY_Tia7mpty-z45przejJhsPrW51W1g_dyuKJdz9d3PGztEYtJ3vYcT0csY-4/exec',
     CONTACT_EMAIL: 'mohsin.salim567@gmail.com',
     // Haldi begins 19 March 2027, 15:30 Bali time (WITA, UTC+8)
     WEDDING_ISO: '2027-03-19T15:30:00+08:00'
