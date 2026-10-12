@@ -171,20 +171,34 @@
     statusEl.hidden = false;
   }
 
-  /* Hide the "which events / dietary / party names" fields for
-     anyone who has said they can't make it. */
+  /* Two gates: most of the form only matters to people who are coming,
+     and the guest's name only matters if they are bringing one. */
   function syncConditional() {
     var coming = attending && attending.value === 'Joyfully accepts';
-    Array.prototype.forEach.call(
-      document.querySelectorAll('[data-when="attending"]'),
-      function (el) { el.hidden = !coming; }
-    );
+
+    var picked = form && form.querySelector('input[name="guests"]:checked');
+    var bringing = coming && picked && picked.value === '2';
+
+    var show = function (sel, on) {
+      Array.prototype.forEach.call(
+        document.querySelectorAll(sel),
+        function (el) { el.hidden = !on; }
+      );
+    };
+
+    show('[data-when="attending"]', coming);
+    show('[data-when="plusone"]', bringing);
   }
 
   if (attending) {
     attending.addEventListener('change', syncConditional);
-    syncConditional();
   }
+  if (form) {
+    form.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.name === 'guests') syncConditional();
+    });
+  }
+  syncConditional();
 
   if (form) {
     form.addEventListener('submit', function (ev) {
@@ -221,6 +235,8 @@
       };
 
       // People who decline shouldn't carry stale party details.
+      if (payload.guests !== '2') payload.guestNames = '';
+
       if (payload.attending !== 'Joyfully accepts') {
         payload.guests = '0';
         payload.guestNames = '';

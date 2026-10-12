@@ -843,6 +843,14 @@ img { max-width: 100%; display: block; }
   clip-path: polygon(14% 46%, 0 60%, 39% 100%, 100% 22%, 86% 9%, 37% 70%);
   transition: transform 0.18s var(--ease);
 }
+/* same control, round, with a dot instead of a tick */
+.check input[type="radio"] { border-radius: 50%; }
+.check input[type="radio"]::before {
+  clip-path: none;
+  border-radius: 50%;
+  width: 8px; height: 8px;
+}
+
 .check input:checked { background: var(--gold); }
 .check input:checked::before { transform: scale(1); }
 .check input:focus-visible { outline: 2px solid var(--ocean); outline-offset: 3px; }
