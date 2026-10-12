@@ -12,7 +12,6 @@
   var CONFIG = {
     RSVP_ENDPOINT:
       'https://script.google.com/macros/s/AKfycbzDcxZtY_Tia7mpty-z45przejJhsPrW51W1g_dyuKJdz9d3PGztEYtJ3vYcT0csY-4/exec',
-    CONTACT_EMAIL: 'mohsin.salim567@gmail.com',
     // Haldi begins 19 March 2027, 15:30 Bali time (WITA, UTC+8)
     WEDDING_ISO: '2027-03-19T15:30:00+08:00'
   };
@@ -214,8 +213,8 @@
       }
 
       if (!CONFIG.RSVP_ENDPOINT) {
-        say('The RSVP form is not connected yet. Please email ' +
-            CONFIG.CONTACT_EMAIL + ' and we will add you by hand.', true);
+        say('The RSVP form is not connected yet. Please message us directly ' +
+            'and we will add you by hand.', true);
         return;
       }
 
@@ -269,8 +268,8 @@
           console.error('RSVP failed:', err);
           submit.disabled = false;
           submit.textContent = 'Send our RSVP';
-          say('Something went wrong sending that. Please try again, or email ' +
-              CONFIG.CONTACT_EMAIL + ' and we will add you by hand.', true);
+          say('Something went wrong sending that. Please try again, or message ' +
+              'us directly and we will add you by hand.', true);
         });
     });
   }

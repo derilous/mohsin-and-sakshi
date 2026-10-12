@@ -22,7 +22,7 @@ own. The guest gets a confirmation email instantly. You get a notification email
 4. At the top of the file, check these two settings:
 
    ```js
-   var COUPLE_EMAIL = 'mohsin.salim567@gmail.com';   // where notifications go
+   var NOTIFY_EMAILS = 'mohsin.salim567@gmail.com, sakshi.arora2098@gmail.com';
    var SITE_URL     = '';                            // fill in after step 4
    ```
 

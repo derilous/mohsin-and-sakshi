@@ -17,8 +17,9 @@
 // ====================== SETTINGS =====================================
 
 var SHEET_NAME   = 'RSVPs';
-var COUPLE_EMAIL = 'mohsin.salim567@gmail.com';   // notifications land here
-var REPLY_TO     = 'mohsin.salim567@gmail.com';   // guests reply here
+// Every new RSVP notifies both of them. Comma-separated; add more if needed.
+var NOTIFY_EMAILS = 'mohsin.salim567@gmail.com, sakshi.arora2098@gmail.com';
+var REPLY_TO      = 'mohsin.salim567@gmail.com';   // guests reply here
 var FROM_NAME    = 'Sakshi & Mohsin';
 var SITE_URL     = 'https://derilous.github.io/mohsin-and-sakshi/';
 
@@ -202,7 +203,7 @@ function emailCouple(r, updated) {
   ];
 
   MailApp.sendEmail({
-    to: COUPLE_EMAIL,
+    to: NOTIFY_EMAILS,
     replyTo: r.email,
     name: 'Wedding RSVPs',
     subject: (updated ? '[updated] ' : '') + 'RSVP: ' + r.name + ' — ' + r.attending,
@@ -354,7 +355,7 @@ function testRsvp() {
     postData: {
       contents: JSON.stringify({
         name: 'Test Guest',
-        email: COUPLE_EMAIL,
+        email: REPLY_TO,
         phone: '+91 00000 00000',
         attending: 'Joyfully accepts',
         guests: '2',
