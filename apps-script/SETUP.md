@@ -61,10 +61,29 @@ Then go back to the Apps Script editor, set `SITE_URL` to your live URL, save,
 and **Deploy → Manage deployments → edit (pencil) → Version: New version →
 Deploy**. That makes the confirmation emails link back to the invitation.
 
+## 4b. Confirm the deployment actually took
+
+Editing `Code.gs` changes nothing until you deploy a *new version* — the most
+common mistake is clicking Deploy without switching the Version dropdown to
+**New version**, which just redeploys the old code.
+
+To check, open your `/exec` URL in a browser. It returns the version string
+from the top of `Code.gs`:
+
+```json
+{"ok":true,"service":"rsvp","version":"2026-10-12b","notifying":2}
+```
+
+If `version` doesn't match what's in your file, the deployment didn't take.
+`notifying` is how many addresses in `NOTIFY_EMAILS` passed validation.
+
 ## 5. Test it
 
-In the Apps Script editor, pick `testRsvp` from the function dropdown and press
-**Run**. You should get:
+In the Apps Script editor, pick `checkNotifications` from the function dropdown
+and **Run** to confirm every address on the notify list is reachable — it
+prints each one to the log and sends it a one-line email.
+
+Then pick `testRsvp` and **Run**. You should get:
 
 - a new row in the `RSVPs` tab,
 - a confirmation email in your inbox,

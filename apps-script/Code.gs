@@ -16,6 +16,11 @@
 
 // ====================== SETTINGS =====================================
 
+// Bump this whenever you edit this file. A GET on the /exec URL echoes it
+// back, which is the only way to tell from outside whether your latest
+// "Deploy > New version" actually took effect.
+var VERSION      = '2026-10-12b';
+
 var SHEET_NAME   = 'RSVPs';
 // Every new RSVP notifies both of them. Comma-separated; add more if needed.
 var NOTIFY_EMAILS = 'mohsin.salim567@gmail.com, sakshi.arora2098@gmail.com';
@@ -31,7 +36,12 @@ var HEADERS = [
 // ====================== WEB APP ENTRY POINTS =========================
 
 function doGet() {
-  return json({ ok: true, service: 'rsvp', message: 'Ready.' });
+  return json({
+    ok: true,
+    service: 'rsvp',
+    version: VERSION,
+    notifying: recipients_().length
+  });
 }
 
 function doPost(e) {
@@ -184,6 +194,14 @@ function emailGuest(r) {
   });
 }
 
+/** NOTIFY_EMAILS as a clean array, tolerating stray spaces or trailing commas. */
+function recipients_() {
+  return String(NOTIFY_EMAILS || '')
+    .split(',')
+    .map(function (s) { return s.trim(); })
+    .filter(function (s) { return isEmail(s); });
+}
+
 function emailCouple(r, updated) {
   var lines = [
     (updated ? 'UPDATED RSVP' : 'New RSVP'),
@@ -202,12 +220,24 @@ function emailCouple(r, updated) {
     (r.message || '—')
   ];
 
-  MailApp.sendEmail({
-    to: NOTIFY_EMAILS,
-    replyTo: r.email,
-    name: 'Wedding RSVPs',
-    subject: (updated ? '[updated] ' : '') + 'RSVP: ' + r.name + ' — ' + r.attending,
-    body: lines.join('\n')
+  var to = recipients_();
+  if (!to.length) { log_('no valid address in NOTIFY_EMAILS: ' + NOTIFY_EMAILS); return; }
+
+  // Sent one at a time on purpose: a single rejected address in a combined
+  // "to" takes the whole send down, and silently.
+  to.forEach(function (addr) {
+    try {
+      MailApp.sendEmail({
+        to: addr,
+        replyTo: r.email,
+        name: 'Wedding RSVPs',
+        subject: (updated ? '[updated] ' : '') + 'RSVP: ' + r.name + ' — ' + r.attending,
+        body: lines.join('\n')
+      });
+      console.log('notified ' + addr);
+    } catch (err) {
+      log_('notify failed for ' + addr + ': ' + err);
+    }
   });
 }
 
@@ -348,6 +378,25 @@ function log_(msg) {
 }
 
 // ====================== TEST HARNESS ================================
+
+/** Run this from the editor to see who the script will notify, and prove
+ *  MailApp can actually reach each of them. Sends one tiny email each. */
+function checkNotifications() {
+  var to = recipients_();
+  Logger.log('VERSION ' + VERSION);
+  Logger.log('NOTIFY_EMAILS parses to: ' + JSON.stringify(to));
+  Logger.log('Remaining email quota today: ' + MailApp.getRemainingDailyQuota());
+  to.forEach(function (addr) {
+    try {
+      MailApp.sendEmail({ to: addr, name: 'Wedding RSVPs',
+        subject: 'RSVP notifications are working',
+        body: 'If you can read this, new RSVPs will reach ' + addr + '.' });
+      Logger.log('  sent OK -> ' + addr);
+    } catch (e) {
+      Logger.log('  FAILED  -> ' + addr + ' : ' + e);
+    }
+  });
+}
 
 /** Run this once from the editor to check the Sheet + emails work. */
 function testRsvp() {
