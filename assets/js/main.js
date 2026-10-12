@@ -171,10 +171,12 @@
     statusEl.hidden = false;
   }
 
-  /* Two gates: most of the form only matters to people who are coming,
-     and the guest's name only matters if they are bringing one. */
+  /* Two gates. The form shows in full by default — hiding the bulk of it
+     behind an unchosen dropdown reads as a form that isn't asking anything.
+     It only collapses once someone actively declines. */
   function syncConditional() {
-    var coming = attending && attending.value === 'Joyfully accepts';
+    var declined = attending && attending.value === 'Regretfully declines';
+    var coming = !declined;
 
     var picked = form && form.querySelector('input[name="guests"]:checked');
     var bringing = coming && picked && picked.value === '2';
